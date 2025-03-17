@@ -1,5 +1,7 @@
-import 'package:classapp/screens/screen_a.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'screens/screen_a.dart';
+import 'screens/screen_b.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,91 +12,111 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Class',
+    return CupertinoApp(
+      title: 'Flutter Class (Cupertino)',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+      theme: CupertinoThemeData(
+        primaryColor: CupertinoColors.systemPurple,
       ),
-      home: const MyHomePage(title: 'Home'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/screen_a': (context) => const ScreenA(),
+        '/screen_b': (context) => const ScreenB(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void goBack() {
-    Navigator.push<void>(
-        context,
-        MaterialPageRoute<void>(
-            builder: (BuildContext context) => const ScreenA()));
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _HomeScreenState extends State<HomeScreen> {
+  final List<String> _imageUrls = [
+    'assets/home.jpg',
+    'assets/home.jpg',
+    'assets/home.jpg'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text("Home"),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      child: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "Welcome to the App!",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 150,
+                autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 16 / 9,
+                viewportFraction: 0.8,
+              ),
+              items: _imageUrls.map((imageUrl) {
+                return Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: CupertinoColors.systemGrey),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(imageUrl, fit: BoxFit.cover),
+                  ),
+                );
+              }).toList(),
+            ),
+            CupertinoButton.filled(
+              onPressed: () => Navigator.pushNamed(context, '/screen_b'),
+              child: const Text("Go to GridView"),
+            ),
+            const SizedBox(height: 10),
+            CupertinoButton.filled(
+              onPressed: () => Navigator.pushNamed(context, '/screen_a'),
+              child: const Text("Go to ListView"),
+            ),
+            Container(
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: CupertinoColors.systemGrey.withOpacity(0.5),
+                    blurRadius: 5,
+                  )
+                ],
+              ),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/home.jpg',
+                    height: 300,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("card with image"),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
-            onPressed: goBack,
-            tooltip: 'Back to previous',
-            child: const Icon(Icons.arrow_forward),
-          ),
-          FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-          ),
-        ],
       ),
     );
   }

@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class ScreenA extends StatelessWidget {
   const ScreenA({super.key});
-
-  get gridDelegate => null;
 
   void goBack(BuildContext context) {
     Navigator.of(context).pop();
@@ -11,23 +9,25 @@ class ScreenA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("ScreenA"),
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text("ListView Screen"),
       ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        children: List.generate(20, (index) {
-          return Center(
-            child: Text('Item \${item}'),
-          );
-        }),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => goBack(context),
-        tooltip: 'Back to previous',
-        child: const Icon(Icons.arrow_back),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return CupertinoListTile(
+                  leading: const Icon(CupertinoIcons.star_fill,
+                      color: CupertinoColors.systemYellow),
+                  title: Text("Dynamic Item ${index + 1}"),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
