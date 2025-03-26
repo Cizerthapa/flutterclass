@@ -48,9 +48,16 @@ class _UpdatePostScreenState extends State<UpdatePostScreen> {
       Navigator.pop(context);
       showCupertinoDialog(
         context: context,
-        builder: (_) => const CupertinoAlertDialog(
-          title: Text("Updated"),
-          content: Text("Post updated successfully."),
+        builder: (_) => CupertinoAlertDialog(
+          title: const Text("Updated!"),
+          content: const Text("Post updated Sucessfully"),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
         ),
       );
     } else {
