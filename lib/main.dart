@@ -1,3 +1,4 @@
+import 'package:classapp/service/token_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +71,34 @@ class _HomeScreenState extends State<HomeScreen> {
       debugPrint("Token is empty");
     } else {
       debugPrint("Got the token: $token");
+    }
+  }
+
+  Future<void> _logout() async {
+    final confirm = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (_) => CupertinoAlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Are you sure you want to logout?"),
+        actions: [
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: const Text("Logout"),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+          CupertinoDialogAction(
+            child: const Text("Cancel"),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await TokenStorage.deleteToken();
+
+      // Navigate to login and remove all previous routes
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     }
   }
 
@@ -283,9 +312,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Text("ListView"),
                     ),
                     const SizedBox(height: 10),
-                    CupertinoButton.filled(
-                      onPressed: () => Navigator.pushNamed(context, '/login'),
-                      child: const Text("Login"),
+                    CupertinoButton(
+                      color: CupertinoColors.systemYellow,
+                      onPressed: _logout,
+                      child: const Text("Logout"),
                     ),
                   ],
                 ),

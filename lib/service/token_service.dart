@@ -13,6 +13,7 @@ class TokenStorage {
   }
 
   static Future<void> deleteToken() async {
-    await _storage.delete(key: _key);
+    final storage = FlutterSecureStorage();
+    await storage.delete(key: 'auth_token');
   }
 }
